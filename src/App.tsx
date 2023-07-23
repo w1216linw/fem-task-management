@@ -1,35 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import { BiShow } from "react-icons/bi";
+import Header from "./components/Header";
+import Sidebar from "./components/Sidebar";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [hiding, setHiding] = useState<boolean>(false);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <main className="border-secondary-900 border h-screen bg-secondary-200">
+      <Header />
+      <div className="flex h-full">
+        <Sidebar hiding={hiding} setHiding={setHiding} />
+        <div>s</div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      <button
+        className={`absolute py-2 px-3 bg-primary-400 text-white rounded-e-full bottom-20 left-0 ${
+          !hiding ? "hidden" : ""
+        } `}
+        onClick={() => setHiding(false)}
+      >
+        <BiShow size={30} />
+      </button>
+    </main>
+  );
 }
 
-export default App
+export default App;
