@@ -17,6 +17,7 @@ const TaskModal = ({ task }: TaskModalProps) => {
         </button>
       </div>
       <p className="text-secondary-500">{task.description}</p>
+      {/* show subtasks */}
       {task.Subtasks && (
         <div>
           <h1>Subtasks ({task.Subtasks.length})</h1>
@@ -44,6 +45,14 @@ const TaskModal = ({ task }: TaskModalProps) => {
           </div>
         </div>
       )}
+      {/* end of subtasks */}
+      {/* show status */}
+      <div>
+        <h1 className="capitalize">current status</h1>
+        <div>
+          <p>{task.description}</p>
+        </div>
+      </div>
     </div>
   );
 };
