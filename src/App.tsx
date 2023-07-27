@@ -10,7 +10,7 @@ function App() {
   return (
     <main className="h-screen bg-secondary-200 grid grid-cols-12">
       <Sidebar hiding={hiding} setHiding={setHiding} />
-      <div className="col-start-4 col-end-13 lg:col-start-3 flex flex-col">
+      <div className="col-start-4 col-end-13 xl:col-start-3 flex flex-col">
         <Header />
         <Dashboard />
       </div>

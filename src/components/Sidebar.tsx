@@ -13,7 +13,7 @@ const Sidebar = ({ hiding, setHiding }: SidebarProps) => {
   const [currentTab, setCurrentTab] = useState<string>("board1");
 
   return (
-    <div className={`col-start-1 col-end-4 lg:col-end-3  h-full flex flex-col`}>
+    <div className={`col-start-1 col-end-4 xl:col-end-3  h-full flex flex-col`}>
       <div className="h-24 flex items-center bg-white">
         <Logo themed="dark" />
       </div>
@@ -30,7 +30,7 @@ const Sidebar = ({ hiding, setHiding }: SidebarProps) => {
             {boards.map((board) => (
               <div
                 className={`flex flex-row items-center text-secondary-500 gap-2 py-2 rounded-e-full px-5 hover:bg-primary-300 hover:text-white ${
-                  currentTab === board ? "bg-primary-300 text-white" : ""
+                  currentTab === board ? "bg-primary-400 text-white" : ""
                 }`}
               >
                 <MdOutlineDashboard />
