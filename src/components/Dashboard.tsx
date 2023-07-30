@@ -121,7 +121,9 @@ const Dashboard = () => {
           </button>
         </div>
       </div>
-      {showTaskModal && <TaskModal task={selectedTask} />}
+      {showTaskModal && selectedTask && (
+        <TaskModal task={selectedTask} setShowTaskModal={setShowTaskModal} />
+      )}
     </div>
   );
 };
