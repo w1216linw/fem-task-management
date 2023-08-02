@@ -2,6 +2,7 @@ import { useState } from "react";
 import { BiHide } from "react-icons/bi";
 import { MdOutlineDashboard } from "react-icons/md";
 import Logo from "../assets/Logo";
+import NewBoardModal from "./NewBoardModal";
 
 interface SidebarProps {
   hiding: boolean;
@@ -9,8 +10,9 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ hiding, setHiding }: SidebarProps) => {
-  const boards = ["board1", "board2", "board3"];
+  const boards = ["board1"];
   const [currentTab, setCurrentTab] = useState<string>("board1");
+  const [showNewBoardModal, setShowNewBoardModal] = useState(false);
 
   return (
     <div className={`col-start-1 col-end-4 xl:col-end-3  h-full flex flex-col`}>
@@ -38,12 +40,18 @@ const Sidebar = ({ hiding, setHiding }: SidebarProps) => {
               </div>
             ))}
           </div>
-          <button className="flex flex-row items-center gap-2 px-5 ">
+          <button
+            className="flex flex-row items-center gap-2 px-5 "
+            onClick={() => setShowNewBoardModal(true)}
+          >
             <MdOutlineDashboard className="text-primary-400" />
             <span className="font-bold text-primary-400">
               +Create New Board
             </span>
           </button>
+          {showNewBoardModal && (
+            <NewBoardModal setShowModal={setShowNewBoardModal} />
+          )}
         </div>
         <div className="mt-auto px-5 mb-3">
           <button
