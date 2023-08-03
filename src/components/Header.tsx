@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { BiDotsVertical } from "react-icons/bi";
-import NewTaskModal from "./NewTaskModal";
+import NewTaskModal from "./modal/NewTaskModal";
 
 const Header = () => {
   const [showTaskModal, setShowTaskModal] = useState(false);

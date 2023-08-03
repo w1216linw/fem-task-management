@@ -1,19 +1,13 @@
-import { Dispatch, SetStateAction } from "react";
+import Modal from "./Modal";
 
 interface ModalProps {
-  setShowModal: Dispatch<SetStateAction<boolean>>;
+  setShowModal: (showModal: boolean) => void;
 }
 
 const NewColumnModal: React.FC<ModalProps> = ({ setShowModal }) => {
   return (
-    <div
-      className="h-screen w-screen flex justify-center items-center bg-black bg-opacity-40 absolute inset-0"
-      onClick={() => setShowModal(false)}
-    >
-      <div
-        className="w-3/5 max-w-xl p-6 bg-white rounded-lg space-y-3"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <Modal setShowModal={setShowModal}>
+      <>
         <h1 className="text-xl font-bold">Add New Column</h1>
         <div>
           <h2 className="text-secondary-500 font-bold text-sm mb-2">Title</h2>
@@ -29,8 +23,8 @@ const NewColumnModal: React.FC<ModalProps> = ({ setShowModal }) => {
         <button className="w-full py-2 bg-primary-400 rounded-full text-white mt-4 text-sm font-bold">
           Save Column
         </button>
-      </div>
-    </div>
+      </>
+    </Modal>
   );
 };
 

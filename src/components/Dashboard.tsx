@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { sampleColumn } from "../lib/exampleSetting";
-import NewColumnModal from "./NewColumnModal";
-import TaskModal from "./TaskModal";
+import NewColumnModal from "./modal/NewColumnModal";
+import TaskModal from "./modal/TaskModal";
 
 export interface Subtask {
   id: number;
@@ -21,12 +21,16 @@ export interface Task {
 
 export interface Column {
   id: number;
-  title: string;
+  name: string;
   tasks?: Task[];
 }
 
-const Dashboard = () => {
-  const [columns, setColumns] = useState<Column[]>(sampleColumn);
+interface DashboardProps {
+  columns?: Column[];
+}
+
+const Dashboard: React.FC<DashboardProps> = ({ columns }) => {
+  const [_columns, setColumns] = useState<Column[]>(sampleColumn);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [showColumnModal, setShowColumnModal] = useState(false);
@@ -38,10 +42,10 @@ const Dashboard = () => {
   return (
     <div className="h-full overflow-scroll w-full p-4">
       <div className="flex w-min h-full gap-4">
-        {columns.map((column) => (
+        {columns?.map((column) => (
           <div key={column.id} className="w-64">
             <h1 className="capitalize text-secondary-500 font-bold mb-4">
-              {column.title} {column.tasks && `(${column.tasks.length})`}
+              {column.name} {column.tasks && `(${column.tasks.length})`}
             </h1>
             <div className="flex flex-col gap-4">
               {column?.tasks?.map((task) => (

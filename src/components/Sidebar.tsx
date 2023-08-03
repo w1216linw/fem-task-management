@@ -2,16 +2,32 @@ import { useState } from "react";
 import { BiHide } from "react-icons/bi";
 import { MdOutlineDashboard } from "react-icons/md";
 import Logo from "../assets/Logo";
-import NewBoardModal from "./NewBoardModal";
+import { Column } from "./Dashboard";
+import NewBoardModal from "./modal/NewBoardModal";
 
 interface SidebarProps {
   hiding: boolean;
+  boards: Board[];
+  currentTab: string;
   setHiding: (hiding: boolean) => void;
+  setBoards: (boards: Board[]) => void;
+  setCurrentTab: (currentTab: string) => void;
 }
 
-const Sidebar = ({ hiding, setHiding }: SidebarProps) => {
-  const boards = ["board1"];
-  const [currentTab, setCurrentTab] = useState<string>("board1");
+export interface Board {
+  id: string;
+  name: string;
+  columns: Column[];
+}
+
+const Sidebar: React.FC<SidebarProps> = ({
+  hiding,
+  setHiding,
+  boards,
+  currentTab,
+  setCurrentTab,
+  setBoards,
+}) => {
   const [showNewBoardModal, setShowNewBoardModal] = useState(false);
 
   return (
@@ -29,14 +45,15 @@ const Sidebar = ({ hiding, setHiding }: SidebarProps) => {
             All Boards ({boards.length})
           </h1>
           <div className="flex flex-col gap-2">
-            {boards.map((board) => (
+            {boards.map((board, idx) => (
               <div
+                key={idx}
                 className={`flex flex-row items-center text-secondary-500 gap-2 py-2 rounded-e-full px-5 hover:bg-primary-300 hover:text-white ${
-                  currentTab === board ? "bg-primary-400 text-white" : ""
+                  currentTab === board.name ? "bg-primary-400 text-white" : ""
                 }`}
               >
                 <MdOutlineDashboard />
-                <span className="font-bold">{board}</span>
+                <span className="font-bold">{board.name}</span>
               </div>
             ))}
           </div>
@@ -50,7 +67,11 @@ const Sidebar = ({ hiding, setHiding }: SidebarProps) => {
             </span>
           </button>
           {showNewBoardModal && (
-            <NewBoardModal setShowModal={setShowNewBoardModal} />
+            <NewBoardModal
+              setShowModal={setShowNewBoardModal}
+              boards={boards}
+              setBoards={setBoards}
+            />
           )}
         </div>
         <div className="mt-auto px-5 mb-3">

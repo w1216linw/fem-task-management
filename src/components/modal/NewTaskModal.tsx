@@ -1,23 +1,18 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { useState } from "react";
 import { FaChevronDown, FaChevronUp, FaTimes } from "react-icons/fa";
-import { state } from "../lib/exampleSetting";
+import { state } from "../../lib/exampleSetting";
+import Modal from "./Modal";
 
 interface NewTaskModalProps {
-  setShowTaskModal: Dispatch<SetStateAction<boolean>>;
+  setShowModal: (showModal: boolean) => void;
 }
 
-const NewTaskModal: React.FC<NewTaskModalProps> = ({ setShowTaskModal }) => {
+const NewTaskModal: React.FC<NewTaskModalProps> = ({ setShowModal }) => {
   const [showStatusOption, setShowStatusOption] = useState(false);
   const [taskState, setTaskState] = useState(state[0]);
   return (
-    <div
-      className="h-screen w-screen flex justify-center items-center bg-black bg-opacity-40 absolute inset-0"
-      onClick={() => setShowTaskModal(false)}
-    >
-      <div
-        className="w-3/5 max-w-xl p-6 bg-white rounded-lg space-y-6"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <Modal setShowModal={setShowModal}>
+      <>
         <h1 className="text-xl font-bold">Add New Task</h1>
         <div>
           <h2 className="text-secondary-500 font-bold text-sm mb-2">Title</h2>
@@ -83,8 +78,8 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ setShowTaskModal }) => {
         <button className="w-full py-2 bg-primary-400 rounded-full text-white mt-4 text-sm font-bold">
           Create Task
         </button>
-      </div>
-    </div>
+      </>
+    </Modal>
   );
 };
 

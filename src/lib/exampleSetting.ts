@@ -1,4 +1,5 @@
 import { Column, Task } from "../components/Dashboard";
+import { Board } from "../components/Sidebar";
 
 export const state = ["todos", "doing", "done"];
 
@@ -54,15 +55,23 @@ export const sampleTasks: Task[] = [
 export const sampleColumn: Column[] = [
   {
     id: 1,
-    title: "Todo",
+    name: "Todo",
     tasks: sampleTasks,
   },
   {
     id: 2,
-    title: "Doing",
+    name: "Doing",
   },
   {
     id: 3,
-    title: "Done",
+    name: "Done",
+  },
+];
+
+export const sampleBoard: Board[] = [
+  {
+    id: "1",
+    columns: sampleColumn,
+    name: "Sample Board",
   },
 ];
