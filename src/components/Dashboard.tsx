@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { sampleColumn } from "../lib/exampleSetting";
 import NewColumnModal from "./modal/NewColumnModal";
 import TaskModal from "./modal/TaskModal";
 
@@ -26,11 +25,11 @@ export interface Column {
 }
 
 interface DashboardProps {
-  columns?: Column[];
+  columns: Column[];
+  setColumns: (columns: Column[]) => void;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ columns }) => {
-  const [_columns, setColumns] = useState<Column[]>(sampleColumn);
+const Dashboard: React.FC<DashboardProps> = ({ columns, setColumns }) => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [showColumnModal, setShowColumnModal] = useState(false);
@@ -70,7 +69,12 @@ const Dashboard: React.FC<DashboardProps> = ({ columns }) => {
         </div>
       </div>
       {showTaskModal && selectedTask && (
-        <TaskModal task={selectedTask} setShowTaskModal={setShowTaskModal} />
+        <TaskModal
+          columns={columns}
+          setColumns={setColumns}
+          task={selectedTask}
+          setShowTaskModal={setShowTaskModal}
+        />
       )}
       {showColumnModal && <NewColumnModal setShowModal={setShowColumnModal} />}
     </div>

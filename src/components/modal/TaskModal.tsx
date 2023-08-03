@@ -1,18 +1,54 @@
-import { useState } from "react";
-import { AiOutlineCheck } from "react-icons/ai";
+import { useEffect, useState } from "react";
 import { BiDotsVertical } from "react-icons/bi";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
-import { state } from "../../lib/exampleSetting";
-import { Task } from "../Dashboard";
+import { Column, Task } from "../Dashboard";
+import Subtask from "../SubTask";
 import Modal from "./Modal";
 
 interface TaskModalProps {
   task: Task;
+  columns: Column[];
+  setColumns: (columns: Column[]) => void;
   setShowTaskModal: (showModal: boolean) => void;
 }
 
-const TaskModal: React.FC<TaskModalProps> = ({ task, setShowTaskModal }) => {
+const TaskModal: React.FC<TaskModalProps> = ({
+  task,
+  setShowTaskModal,
+  columns,
+  setColumns,
+}) => {
   const [showStatusOption, setShowStatusOption] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState<string>(task.status);
+
+  useEffect(() => {
+    const handleStatusChange = () => {
+      if (selectedStatus.toLowerCase() === task.status.toLowerCase()) return;
+
+      setColumns(
+        columns.map((column) => {
+          if (column.name.toLowerCase() === task.status.toLowerCase()) {
+            column.tasks = column.tasks?.filter((elem) => elem.id !== task.id);
+          }
+          return column;
+        })
+      );
+      setColumns(
+        columns.map((column) => {
+          if (column.name.toLowerCase() === selectedStatus.toLowerCase()) {
+            task.status = selectedStatus;
+            if (column.tasks) {
+              column.tasks.push(task);
+            } else {
+              column.tasks = [task];
+            }
+          }
+          return column;
+        })
+      );
+    };
+    handleStatusChange();
+  }, [selectedStatus]);
 
   return (
     <Modal setShowModal={setShowTaskModal}>
@@ -32,27 +68,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, setShowTaskModal }) => {
             </h1>
             <div className="flex flex-col gap-2">
               {task.Subtasks.map((subtask, idx) => (
-                <div
-                  className="flex gap-2 items-center bg-secondary-200 p-2 rounded-md"
-                  key={idx}
-                >
-                  <div
-                    className={`grid place-items-center w-[18px] h-[18px] rounded-md flex-shrink-0 ${
-                      subtask.completed ? "bg-primary-400" : "bg-white border"
-                    } text-2xl`}
-                  >
-                    {subtask.completed && (
-                      <AiOutlineCheck size={14} color="white" />
-                    )}
-                  </div>
-                  <p
-                    className={` ${
-                      subtask.completed ? "line-through text-secondary-500" : ""
-                    }`}
-                  >
-                    {subtask.description}
-                  </p>
-                </div>
+                <Subtask subtask={subtask} key={idx} />
               ))}
             </div>
           </div>
@@ -79,10 +95,14 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, setShowTaskModal }) => {
               showStatusOption ? "" : "hidden"
             }`}
           >
-            {state.map((state) => (
-              <p className="capitalize text-secondary-500" key={state}>
-                {state}
-              </p>
+            {columns?.map((column) => (
+              <button
+                className="capitalize text-secondary-500 text-left"
+                key={column.name}
+                onClick={() => setSelectedStatus(column.name)}
+              >
+                {column.name}
+              </button>
             ))}
           </div>
         </div>
