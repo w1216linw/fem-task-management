@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Dispatch, useEffect, useState } from "react";
 import { BiDotsVertical } from "react-icons/bi";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { Column, Task } from "../Dashboard";
@@ -8,7 +8,7 @@ import Modal from "./Modal";
 interface TaskModalProps {
   task: Task;
   columns: Column[];
-  setColumns: (columns: Column[]) => void;
+  setColumns: Dispatch<React.SetStateAction<Column[]>>;
   setShowTaskModal: (showModal: boolean) => void;
 }
 
@@ -20,32 +20,32 @@ const TaskModal: React.FC<TaskModalProps> = ({
 }) => {
   const [showStatusOption, setShowStatusOption] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<string>(task.status);
+  const [currentStatus, setCurrentStatus] = useState<string>(task.status);
 
   useEffect(() => {
+    if (selectedStatus.toLowerCase() === task.status.toLowerCase()) return;
     const handleStatusChange = () => {
-      if (selectedStatus.toLowerCase() === task.status.toLowerCase()) return;
+      const toColumn = selectedStatus.toLowerCase();
+      const fromColumn = currentStatus.toLowerCase();
+      const updatedTask = { ...task, status: selectedStatus };
 
-      setColumns(
-        columns.map((column) => {
-          if (column.name.toLowerCase() === task.status.toLowerCase()) {
-            column.tasks = column.tasks?.filter((elem) => elem.id !== task.id);
+      const updateColumn = columns.map((column) => {
+        if (column.name.toLowerCase() === fromColumn) {
+          column.tasks = column.tasks?.filter((elem) => elem.id !== task.id);
+        }
+        if (column.name.toLowerCase() === toColumn) {
+          if (!column.tasks) {
+            column.tasks = [updatedTask];
+          } else {
+            column.tasks.push(updatedTask);
           }
-          return column;
-        })
-      );
-      setColumns(
-        columns.map((column) => {
-          if (column.name.toLowerCase() === selectedStatus.toLowerCase()) {
-            task.status = selectedStatus;
-            if (column.tasks) {
-              column.tasks.push(task);
-            } else {
-              column.tasks = [task];
-            }
-          }
-          return column;
-        })
-      );
+          setCurrentStatus(toColumn);
+        }
+        return column;
+      });
+
+      setColumns(updateColumn);
+      setShowTaskModal(false);
     };
     handleStatusChange();
   }, [selectedStatus]);
@@ -87,7 +87,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
               showStatusOption ? "border-primary-300" : ""
             }`}
           >
-            <p className="capitalize">{task.status}</p>
+            <p className="capitalize">{currentStatus}</p>
             {showStatusOption ? <FaChevronUp /> : <FaChevronDown />}
           </div>
           <div

@@ -8,10 +8,10 @@ import NewBoardModal from "./modal/NewBoardModal";
 interface SidebarProps {
   hiding: boolean;
   boards: Board[];
-  currentTab: string;
+  selectedBoard: Board;
   setHiding: (hiding: boolean) => void;
   setBoards: (boards: Board[]) => void;
-  setCurrentTab: (currentTab: string) => void;
+  setSelectedBoard: (selectedBoard: Board) => void;
 }
 
 export interface Board {
@@ -24,22 +24,22 @@ const Sidebar: React.FC<SidebarProps> = ({
   hiding,
   setHiding,
   boards,
-  currentTab,
-  setCurrentTab,
+  selectedBoard,
+  setSelectedBoard,
   setBoards,
 }) => {
   const [showNewBoardModal, setShowNewBoardModal] = useState(false);
 
   return (
-    <div className={`col-start-1 col-end-4 xl:col-end-3  h-full flex flex-col`}>
-      <div className="h-24 flex items-center bg-white">
+    <div
+      className={`col-start-1 col-end-4 xl:col-end-3 transition-transform h-full flex flex-col ${
+        hiding ? "hidden" : ""
+      }`}
+    >
+      <div className="h-20 ps-2 flex items-center bg-white">
         <Logo themed="dark" />
       </div>
-      <div
-        className={`flex flex-col transition-transform bg-white flex-grow ${
-          hiding ? "-translate-x-full" : ""
-        }`}
-      >
+      <div className={`flex flex-col  bg-white flex-grow `}>
         <div className="space-y-2">
           <h1 className="uppercase font-medium text-xs text-secondary-500 px-5">
             All Boards ({boards.length})
@@ -49,8 +49,11 @@ const Sidebar: React.FC<SidebarProps> = ({
               <div
                 key={idx}
                 className={`flex flex-row items-center text-secondary-500 gap-2 py-2 rounded-e-full px-5 hover:bg-primary-300 hover:text-white ${
-                  currentTab === board.name ? "bg-primary-400 text-white" : ""
+                  selectedBoard.name === board.name
+                    ? "bg-primary-400 text-white"
+                    : ""
                 }`}
+                onClick={() => setSelectedBoard(board)}
               >
                 <MdOutlineDashboard />
                 <span className="font-bold">{board.name}</span>
@@ -71,6 +74,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               setShowModal={setShowNewBoardModal}
               boards={boards}
               setBoards={setBoards}
+              setSelectedBoard={setSelectedBoard}
             />
           )}
         </div>

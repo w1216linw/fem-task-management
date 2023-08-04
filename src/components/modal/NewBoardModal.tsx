@@ -8,12 +8,14 @@ interface ModalProps {
   boards: Board[];
   setShowModal: (showModal: boolean) => void;
   setBoards: (boards: Board[]) => void;
+  setSelectedBoard: (board: Board) => void;
 }
 
 const NewBoardModal: React.FC<ModalProps> = ({
   setShowModal,
   boards,
   setBoards,
+  setSelectedBoard,
 }) => {
   const [name, setName] = useState("");
   const [columns, setColumns] = useState<ColumnType[]>([]);
@@ -24,9 +26,10 @@ const NewBoardModal: React.FC<ModalProps> = ({
 
   const addNewBoard = () => {
     if (!name) return;
-
-    setBoards([...boards, { name, columns, id: boards.length + name }]);
+    const newBoard = { name, columns, id: boards.length + name };
+    setBoards([...boards, newBoard]);
     setShowModal(false);
+    setSelectedBoard(newBoard);
   };
 
   return (

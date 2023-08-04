@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, useState } from "react";
 import NewColumnModal from "./modal/NewColumnModal";
 import TaskModal from "./modal/TaskModal";
 
@@ -26,7 +26,7 @@ export interface Column {
 
 interface DashboardProps {
   columns: Column[];
-  setColumns: (columns: Column[]) => void;
+  setColumns: Dispatch<React.SetStateAction<Column[]>>;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ columns, setColumns }) => {

@@ -1,15 +1,60 @@
-import React, { useState } from "react";
+import React, { Dispatch, useState } from "react";
 import { FaChevronDown, FaChevronUp, FaTimes } from "react-icons/fa";
-import { state } from "../../lib/exampleSetting";
+import { Column } from "../Dashboard";
 import Modal from "./Modal";
 
 interface NewTaskModalProps {
+  columns: Column[];
+  setColumns: Dispatch<React.SetStateAction<Column[]>>;
   setShowModal: (showModal: boolean) => void;
 }
 
-const NewTaskModal: React.FC<NewTaskModalProps> = ({ setShowModal }) => {
+const NewTaskModal: React.FC<NewTaskModalProps> = ({
+  columns,
+  setColumns,
+  setShowModal,
+}) => {
   const [showStatusOption, setShowStatusOption] = useState(false);
-  const [taskState, setTaskState] = useState(state[0]);
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [status, setStatus] = useState(columns[0].name);
+  const [subtasks, setSubtasks] = useState<string[]>([]);
+
+  const handleAddTask = () => {
+    setColumns((prevColumns) => {
+      let updatedColumns = prevColumns.map((column) => {
+        if (column.name.toLowerCase() === status.toLowerCase()) {
+          if (column.tasks)
+            column.tasks.push({
+              created_at: new Date(),
+              title,
+              description,
+              status,
+              id: column?.tasks?.length + 1 || 0,
+              deadline: new Date(),
+            });
+          else {
+            column.tasks = [
+              {
+                created_at: new Date(),
+                title,
+                description,
+                status,
+                id: 0,
+                deadline: new Date(),
+              },
+            ];
+          }
+        }
+
+        return column;
+      });
+
+      return updatedColumns;
+    });
+  };
+
   return (
     <Modal setShowModal={setShowModal}>
       <>
@@ -19,6 +64,8 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ setShowModal }) => {
           <input
             className="w-full border-lines-light border rounded-lg p-2 text-sm"
             type="text"
+            onChange={(e) => setTitle(e.target.value)}
+            value={title}
           />
         </div>
         <div>
@@ -28,6 +75,8 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ setShowModal }) => {
           <textarea
             className="w-full border-lines-light border rounded-lg p-2 text-sm "
             rows={4}
+            onChange={(e) => setDescription(e.target.value)}
+            value={description}
           />
         </div>
         <div className="flex flex-col gap-2">
@@ -59,7 +108,7 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ setShowModal }) => {
               showStatusOption ? "border-primary-300" : ""
             }`}
           >
-            <p className="capitalize">{taskState}</p>
+            <p className="capitalize">{status}</p>
             {showStatusOption ? <FaChevronUp /> : <FaChevronDown />}
           </div>
           <div
@@ -67,15 +116,22 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ setShowModal }) => {
               showStatusOption ? "" : "hidden"
             }`}
           >
-            {state.map((state) => (
-              <p className="capitalize text-secondary-500" key={state}>
-                {state}
-              </p>
+            {columns.map((columns) => (
+              <button
+                className="capitalize text-secondary-500"
+                key={columns.id}
+                onClick={() => setStatus(columns.name)}
+              >
+                {columns.name}
+              </button>
             ))}
           </div>
         </div>
         {/* end of show status */}
-        <button className="w-full py-2 bg-primary-400 rounded-full text-white mt-4 text-sm font-bold">
+        <button
+          className="w-full py-2 bg-primary-400 rounded-full text-white mt-4 text-sm font-bold"
+          onClick={handleAddTask}
+        >
           Create Task
         </button>
       </>
