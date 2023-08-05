@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+input:focus,
+input:active {
+  outline-color: #a8a4ff;
+}
+
+textarea:focus,
+textarea:active {
+  outline-color: #a8a4ff;
+}

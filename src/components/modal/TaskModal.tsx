@@ -4,6 +4,7 @@ import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { Column, Task } from "../Dashboard";
 import Subtask from "../SubTask";
 import Modal from "./Modal";
+import TaskSettingModal from "./TaskSettingModal";
 
 interface TaskModalProps {
   task: Task;
@@ -21,6 +22,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
   const [showStatusOption, setShowStatusOption] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<string>(task.status);
   const [currentStatus, setCurrentStatus] = useState<string>(task.status);
+  const [showSettingModal, setShowSettingModal] = useState(false);
 
   useEffect(() => {
     if (selectedStatus.toLowerCase() === task.status.toLowerCase()) return;
@@ -53,11 +55,18 @@ const TaskModal: React.FC<TaskModalProps> = ({
   return (
     <Modal setShowModal={setShowTaskModal}>
       <>
-        <div className="flex justify-between">
+        <div className="flex justify-between relative">
           <h1 className="text-xl font-bold">{task.title}</h1>
-          <button>
+          <button onClick={() => setShowSettingModal(!showSettingModal)}>
             <BiDotsVertical />
           </button>
+          {showSettingModal && (
+            <TaskSettingModal
+              task={task}
+              setColumns={setColumns}
+              setShowTaskModal={setShowTaskModal}
+            />
+          )}
         </div>
         <p className="text-secondary-500">{task.description}</p>
         {/* show subtasks */}

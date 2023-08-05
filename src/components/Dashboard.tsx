@@ -44,7 +44,10 @@ const Dashboard: React.FC<DashboardProps> = ({ columns, setColumns }) => {
         {columns?.map((column) => (
           <div key={column.id} className="w-64">
             <h1 className="capitalize text-secondary-500 font-bold mb-4">
-              {column.name} {column.tasks && `(${column.tasks.length})`}
+              {column.name}{" "}
+              {column.tasks &&
+                column.tasks.length > 0 &&
+                `(${column.tasks.length})`}
             </h1>
             <div className="flex flex-col gap-4">
               {column?.tasks?.map((task) => (
@@ -76,7 +79,12 @@ const Dashboard: React.FC<DashboardProps> = ({ columns, setColumns }) => {
           setShowTaskModal={setShowTaskModal}
         />
       )}
-      {showColumnModal && <NewColumnModal setShowModal={setShowColumnModal} />}
+      {showColumnModal && (
+        <NewColumnModal
+          setColumns={setColumns}
+          setShowModal={setShowColumnModal}
+        />
+      )}
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React, { Dispatch, useState } from "react";
-import { FaChevronDown, FaChevronUp, FaTimes } from "react-icons/fa";
-import { Column } from "../Dashboard";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { Column, Subtask } from "../Dashboard";
+import SubTaskInput from "../SubTaskInput";
 import Modal from "./Modal";
 
 interface NewTaskModalProps {
@@ -19,7 +20,7 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState(columns[0].name);
-  const [subtasks, setSubtasks] = useState<string[]>([]);
+  const [subtasks, setSubtasks] = useState<Subtask[]>([]);
 
   const handleAddTask = () => {
     setColumns((prevColumns) => {
@@ -31,8 +32,9 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({
               title,
               description,
               status,
-              id: column?.tasks?.length + 1 || 0,
+              id: column.tasks.length + 1,
               deadline: new Date(),
+              Subtasks: subtasks,
             });
           else {
             column.tasks = [
@@ -43,6 +45,7 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({
                 status,
                 id: 0,
                 deadline: new Date(),
+                Subtasks: subtasks,
               },
             ];
           }
@@ -53,6 +56,15 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({
 
       return updatedColumns;
     });
+
+    setShowModal(false);
+  };
+
+  const handleAddSubtask = () => {
+    setSubtasks((prev) => [
+      ...prev,
+      { id: prev.length, description: "", completed: false },
+    ]);
   };
 
   return (
@@ -81,16 +93,18 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({
         </div>
         <div className="flex flex-col gap-2">
           <h2 className="text-secondary-500 font-bold text-sm ">Subtasks</h2>
-          <div className="flex items-center gap-2">
-            <input
-              className="flex-grow border-lines-light border rounded-lg p-2 text-sm"
-              type="text"
-            />
-            <button>
-              <FaTimes size={20} className="text-secondary-500" />
-            </button>
-          </div>
-          <button className="w-full py-2 bg-lines-light rounded-full text-primary-400 mt-4 text-sm font-bold">
+          {subtasks.length > 0 &&
+            subtasks.map((subtask) => (
+              <SubTaskInput
+                key={subtask.id}
+                subtask={subtask}
+                setSubtasks={setSubtasks}
+              />
+            ))}
+          <button
+            className="w-full py-2 bg-lines-light rounded-full text-primary-400 mt-4 text-sm font-bold"
+            onClick={handleAddSubtask}
+          >
             + Add New Subtask
           </button>
         </div>
@@ -118,7 +132,7 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({
           >
             {columns.map((columns) => (
               <button
-                className="capitalize text-secondary-500"
+                className="capitalize text-secondary-500 text-left"
                 key={columns.id}
                 onClick={() => setStatus(columns.name)}
               >
