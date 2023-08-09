@@ -3,6 +3,7 @@ import { BiDotsVertical } from "react-icons/bi";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { Column, Task } from "../Dashboard";
 import Subtask from "../SubTask";
+import EditTaskModal from "./EditTaskModal";
 import Modal from "./Modal";
 import TaskSettingModal from "./TaskSettingModal";
 
@@ -23,6 +24,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
   const [selectedStatus, setSelectedStatus] = useState<string>(task.status);
   const [currentStatus, setCurrentStatus] = useState<string>(task.status);
   const [showSettingModal, setShowSettingModal] = useState(false);
+  const [showEditTaskModal, setShowEditTaskModal] = useState(false);
 
   useEffect(() => {
     if (selectedStatus.toLowerCase() === task.status.toLowerCase()) return;
@@ -54,69 +56,80 @@ const TaskModal: React.FC<TaskModalProps> = ({
 
   return (
     <Modal setShowModal={setShowTaskModal}>
-      <>
-        <div className="flex justify-between relative">
-          <h1 className="text-xl font-bold">{task.title}</h1>
-          <button onClick={() => setShowSettingModal(!showSettingModal)}>
-            <BiDotsVertical />
-          </button>
-          {showSettingModal && (
-            <TaskSettingModal
-              task={task}
-              setColumns={setColumns}
-              setShowTaskModal={setShowTaskModal}
-            />
+      {!showEditTaskModal ? (
+        <>
+          <div className="flex justify-between relative">
+            <h1 className="text-xl font-bold">{task.title}</h1>
+            <button onClick={() => setShowSettingModal(!showSettingModal)}>
+              <BiDotsVertical />
+            </button>
+            {showSettingModal && (
+              <TaskSettingModal
+                task={task}
+                setColumns={setColumns}
+                setShowTaskModal={setShowTaskModal}
+                setShowEditTaskModal={setShowEditTaskModal}
+                setShowSettingModal={setShowSettingModal}
+              />
+            )}
+          </div>
+          <p className="text-secondary-500">{task.description}</p>
+          {/* show subtasks */}
+          {task.Subtasks && (
+            <div>
+              <h1 className="text-secondary-500 font-bold text-sm mb-2">
+                Subtasks ({task.Subtasks.length})
+              </h1>
+              <div className="flex flex-col gap-2">
+                {task.Subtasks.map((subtask, idx) => (
+                  <Subtask subtask={subtask} key={idx} />
+                ))}
+              </div>
+            </div>
           )}
-        </div>
-        <p className="text-secondary-500">{task.description}</p>
-        {/* show subtasks */}
-        {task.Subtasks && (
-          <div>
-            <h1 className="text-secondary-500 font-bold text-sm mb-2">
-              Subtasks ({task.Subtasks.length})
+          {/* end of subtasks */}
+          {/* show status */}
+          <div
+            className="relative"
+            onClick={() => setShowStatusOption(!showStatusOption)}
+          >
+            <h1 className="capitalize text-secondary-500 font-bold text-sm mb-2">
+              current status
             </h1>
-            <div className="flex flex-col gap-2">
-              {task.Subtasks.map((subtask, idx) => (
-                <Subtask subtask={subtask} key={idx} />
+            <div
+              className={`border border-lines-light px-4 py-2 flex justify-between items-center active:border-primary-300 rounded-lg ${
+                showStatusOption ? "border-primary-300" : ""
+              }`}
+            >
+              <p className="capitalize">{currentStatus}</p>
+              {showStatusOption ? <FaChevronUp /> : <FaChevronDown />}
+            </div>
+            <div
+              className={`p-4 flex flex-col gap-2 absolute -bottom-30 left-0 bg-white w-full rounded-lg ${
+                showStatusOption ? "" : "hidden"
+              }`}
+            >
+              {columns?.map((column) => (
+                <button
+                  className="capitalize text-secondary-500 text-left"
+                  key={column.name}
+                  onClick={() => setSelectedStatus(column.name)}
+                >
+                  {column.name}
+                </button>
               ))}
             </div>
           </div>
-        )}
-        {/* end of subtasks */}
-        {/* show status */}
-        <div
-          className="relative"
-          onClick={() => setShowStatusOption(!showStatusOption)}
-        >
-          <h1 className="capitalize text-secondary-500 font-bold text-sm mb-2">
-            current status
-          </h1>
-          <div
-            className={`border border-lines-light px-4 py-2 flex justify-between items-center active:border-primary-300 rounded-lg ${
-              showStatusOption ? "border-primary-300" : ""
-            }`}
-          >
-            <p className="capitalize">{currentStatus}</p>
-            {showStatusOption ? <FaChevronUp /> : <FaChevronDown />}
-          </div>
-          <div
-            className={`p-4 flex flex-col gap-2 absolute -bottom-30 left-0 bg-white w-full rounded-lg ${
-              showStatusOption ? "" : "hidden"
-            }`}
-          >
-            {columns?.map((column) => (
-              <button
-                className="capitalize text-secondary-500 text-left"
-                key={column.name}
-                onClick={() => setSelectedStatus(column.name)}
-              >
-                {column.name}
-              </button>
-            ))}
-          </div>
-        </div>
-        {/* end of show status */}
-      </>
+          {/* end of show status */}
+        </>
+      ) : (
+        <EditTaskModal
+          setShowModal={setShowEditTaskModal}
+          task={task}
+          columns={columns}
+          setColumns={setColumns}
+        />
+      )}
     </Modal>
   );
 };

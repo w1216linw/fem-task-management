@@ -9,7 +9,7 @@ interface SubtaskProps {
 }
 
 const SubTaskInput: React.FC<SubtaskProps> = ({ setSubtasks, subtask }) => {
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState(subtask.description || "");
   const handleDeleteSubtask = () => {
     setSubtasks((prevSubtasks) =>
       prevSubtasks.filter((prevSubtask) => prevSubtask.id !== subtask.id)
