@@ -1,7 +1,6 @@
 import React, { Dispatch, useState } from "react";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { Column, Subtask } from "../Dashboard";
-import SubTaskInput from "../SubTaskInput";
+import TaskForm from "../TaskForm";
 import Modal from "./Modal";
 
 interface NewTaskModalProps {
@@ -15,18 +14,18 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({
   setColumns,
   setShowModal,
 }) => {
-  const [showStatusOption, setShowStatusOption] = useState(false);
-
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [status, setStatus] = useState(columns[0].name);
+  const [status, setStatus] = useState(columns[0]?.name || "");
   const [subtasks, setSubtasks] = useState<Subtask[]>([]);
 
   const handleAddTask = () => {
+    if (!title.trim()) return;
+
     setColumns((prevColumns) => {
-      let updatedColumns = prevColumns.map((column) => {
+      const updatedColumns = prevColumns.map((column) => {
         if (column.name.toLowerCase() === status.toLowerCase()) {
-          if (column.tasks)
+          if (column.tasks) {
             column.tasks.push({
               created_at: new Date(),
               title,
@@ -36,7 +35,7 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({
               deadline: new Date(),
               Subtasks: subtasks,
             });
-          else {
+          } else {
             column.tasks = [
               {
                 created_at: new Date(),
@@ -50,105 +49,32 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({
             ];
           }
         }
-
         return column;
       });
-
       return updatedColumns;
     });
 
     setShowModal(false);
   };
 
-  const handleAddSubtask = () => {
-    setSubtasks((prev) => [
-      ...prev,
-      { id: prev.length, description: "", completed: false },
-    ]);
-  };
-
   return (
     <Modal setShowModal={setShowModal}>
-      <>
-        <h1 className="text-xl font-bold">Add New Task</h1>
-        <div>
-          <h2 className="text-secondary-500 font-bold text-sm mb-2">Title</h2>
-          <input
-            className="w-full border-lines-light border rounded-lg p-2 text-sm"
-            type="text"
-            onChange={(e) => setTitle(e.target.value)}
-            value={title}
-          />
-        </div>
-        <div>
-          <h2 className="text-secondary-500 font-bold text-sm mb-2">
-            Description
-          </h2>
-          <textarea
-            className="w-full border-lines-light border rounded-lg p-2 text-sm "
-            rows={4}
-            onChange={(e) => setDescription(e.target.value)}
-            value={description}
-          />
-        </div>
-        <div className="flex flex-col gap-2">
-          <h2 className="text-secondary-500 font-bold text-sm ">Subtasks</h2>
-          {subtasks.length > 0 &&
-            subtasks.map((subtask) => (
-              <SubTaskInput
-                key={subtask.id}
-                subtask={subtask}
-                setSubtasks={setSubtasks}
-              />
-            ))}
-          <button
-            className="w-full py-2 bg-lines-light rounded-full text-primary-400 mt-4 text-sm font-bold"
-            onClick={handleAddSubtask}
-          >
-            + Add New Subtask
-          </button>
-        </div>
-
-        {/* show status */}
-        <div
-          className="relative"
-          onClick={() => setShowStatusOption(!showStatusOption)}
-        >
-          <h1 className="capitalize text-secondary-500 font-bold text-sm mb-2">
-            status
-          </h1>
-          <div
-            className={`border border-lines-light px-4 py-2 flex justify-between items-center active:border-primary-300 rounded-lg ${
-              showStatusOption ? "border-primary-300" : ""
-            }`}
-          >
-            <p className="capitalize">{status}</p>
-            {showStatusOption ? <FaChevronUp /> : <FaChevronDown />}
-          </div>
-          <div
-            className={`p-4 flex flex-col gap-2 absolute -bottom-30 left-0 bg-white w-full rounded-lg ${
-              showStatusOption ? "" : "hidden"
-            }`}
-          >
-            {columns.map((columns) => (
-              <button
-                className="capitalize text-secondary-500 text-left"
-                key={columns.id}
-                onClick={() => setStatus(columns.name)}
-              >
-                {columns.name}
-              </button>
-            ))}
-          </div>
-        </div>
-        {/* end of show status */}
-        <button
-          className="w-full py-2 bg-primary-400 rounded-full text-white mt-4 text-sm font-bold"
-          onClick={handleAddTask}
-        >
-          Create Task
-        </button>
-      </>
+      <div>
+        <h1 className="text-xl font-bold mb-4">Add New Task</h1>
+        <TaskForm
+          title={title}
+          description={description}
+          status={status}
+          subtasks={subtasks}
+          columns={columns}
+          onTitleChange={setTitle}
+          onDescriptionChange={setDescription}
+          onStatusChange={setStatus}
+          onSubtasksChange={setSubtasks}
+          onSubmit={handleAddTask}
+          submitButtonText="Create Task"
+        />
+      </div>
     </Modal>
   );
 };

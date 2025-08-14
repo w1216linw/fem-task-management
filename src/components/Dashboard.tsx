@@ -44,7 +44,7 @@ const Dashboard: React.FC<DashboardProps> = ({ columns, setColumns }) => {
         {columns?.map((column) => (
           <div key={column.id} className="w-64">
             <h1 className="capitalize text-secondary-500 font-bold mb-4">
-              {column.name}{" "}
+              {column.name}
               {column.tasks &&
                 column.tasks.length > 0 &&
                 `(${column.tasks.length})`}

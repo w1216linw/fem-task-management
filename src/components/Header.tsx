@@ -24,7 +24,7 @@ const Header: React.FC<HeaderProps> = ({
 
   const handleDeleteBoard = () => {
     setBoards((boards) => {
-      let updatedBoards = boards.filter(
+      const updatedBoards = boards.filter(
         (board) => board.id !== selectedBoard.id
       );
       if (updatedBoards.length > 0) {
